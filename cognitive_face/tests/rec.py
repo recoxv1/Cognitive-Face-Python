@@ -290,7 +290,7 @@ fi
 }
 
 Active_scan(){
-	bod; read -r -p "Active Scan discovered IP's? [y/N] " response
+	bod; read -r -p "Active Scan the discovered IP's? [y/N] " response
 	if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]
 	then
 	    while read ips
