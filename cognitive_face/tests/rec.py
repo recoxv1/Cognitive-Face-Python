@@ -6,7 +6,7 @@
 
 VTOTAL_API_KEY="f5811292e1a072403b7a356f8d899c53c80da463cab2757771b55469cbfda95c" # VirusTotal API Key Here
 SHODAN_API_KEY="P39ATgSrtgYAa3wdwIN42Nhxjy7nsYmG" # Shodan API Key Here
-rm /tmp/.cache > /dev/null 2>&1
+
 ####################################################################################################
 ####################################################################################################
 ###																								 ###
@@ -49,6 +49,7 @@ package(){
 		[ ! -f "~/cansina" ]&& git clone --depth=1 https://github.com/sameerchohan2k19/cansina ~/cansina > /dev/null 2>&1 && pip3 install -r ~/cansina/requirements.txt > /dev/null 2>&1;echo -ne 'Checking Cans[#############             60%]\r';
 		[ ! -f "~/cansina/wlist" ]&& curl -s -L https://raw.githubusercontent.com/sameerchohan2k19/SecLists/master/Discovery/Web-Content/common.txt > ~/cansina/wlist;echo -ne 'Checking List[################          70%]\r';
 		[ ! -f "~/relative-url-extractor" ]&& git clone https://github.com/jobertabma/relative-url-extractor.git ~/relative-url-extractor > /dev/null 2>&1;echo -ne 'Checking URLx[###################       80%]\r';
+		[ ! -f "~/subdomain-takeover" ]&& git clone https://github.com/sameerchohan2k19/subdomain-takeover.git ~/subdomain-takeover > /dev/null 2>&1 && pip install -r ~/subdomain-takeover/requirements.txt > /dev/null 2>&1;echo -ne 'Checking URLx[######################    90%]\r';
 		echo -ne 'DONE           [######################### 100%]\r';echo -e "\n"
 	elif [ "$machine" = "Mac" ]
 	then
@@ -61,6 +62,7 @@ package(){
 		[ ! -f "~/cansina" ]&& git clone --depth=1 https://github.com/sameerchohan2k19/cansina ~/cansina > /dev/null 2>&1 && pip3 install -r ~/cansina/requirements.txt > /dev/null 2>&1;echo -ne 'Checking Cans[#############             60%]\r';
 		[ ! -f "~/cansina/wlist" ]&& curl -s -L https://raw.githubusercontent.com/sameerchohan2k19/SecLists/master/Discovery/Web-Content/common.txt > ~/cansina/wlist;echo -ne 'Checking List[################          70%]\r';
 		[ ! -f "~/relative-url-extractor" ]&& git clone https://github.com/jobertabma/relative-url-extractor.git ~/relative-url-extractor > /dev/null 2>&1;echo -ne 'Checking URLx[###################       80%]\r';
+		[ ! -f "~/subdomain-takeover" ]&& git clone https://github.com/sameerchohan2k19/subdomain-takeover.git ~/subdomain-takeover > /dev/null 2>&1 && pip install -r ~/subdomain-takeover/requirements.txt > /dev/null 2>&1;echo -ne 'Checking URLx[######################    90%]\r';
 		echo -ne 'DONE           [######################### 100%]\r';echo -e "\n"
 	else
 		echo -e "\n${RED}[!] The current Operating System does not support this program. Exiting...${RESTORE}\n"; sleep 3;exit 1;
@@ -177,7 +179,7 @@ cat ${logdir}/crawl1 | pcregrep --buffer-size=200k --context=3 -Mo '.*?\(.*?\)(\
 bod; func_finder func; bod
 if [ "$count" -ne 0 ]
 then
-	read -r -p "Would you like to search the keywords? [y/N] " response
+	read -r -p "Do you want to search keywords? [y/N] " response
 	if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]
 	then
 		beautify=$(cat ${logdir}/func | js-beautify > ${logdir}/beautify)
@@ -185,7 +187,7 @@ then
 		less ${logdir}/beautify2; bod
 	fi
 fi
-read -r -p "Would you like parse or beautify js/link? [y/N] " response
+read -r -p "Do you want to parse or beautify js/link? [y/N] " response
 if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]
 then
 	echo -e "\n[1] Beautify Js\n[2] Parse JS\n"
@@ -196,7 +198,7 @@ then
 		validate $url
 	    curl -iL -s -A "$USER_AGENT" -H "referer:$url" $url -B | js-beautify > ${logdir}/beautify3;
 	    func_finder beautify3
-	    read -r -p "Would you like to search the keywords? [y/N] " response
+	    read -r -p "Do you want to search keywords? [y/N] " response
 		if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]
 		then
 	    	less ${logdir}/beautify3; echo -e "${GREEN}[+]${RESTORE} Done\n"; bod
@@ -238,7 +240,7 @@ cve(){
 }
 arecord(){
 bod;echo ''
-read -r -p "Would you like to check A record of discovered subdomains? [y/N] " response
+read -r -p "Do you want to check A record of discovered subdomains? [y/N] " response
 if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]
 then
     cat /tmp/samhax/arecord
@@ -248,7 +250,7 @@ fi
 bod;echo -e "${YELLOW}Found ${GREEN}${arc}${YELLOW} unique Ip's from A record.${RESTORE}"
 }
 shodan_scanning(){
-read -r -p "Passive Scan discovered IP's? [y/N] " response
+read -r -p "Passive Scan the discovered IP's? [y/N] " response
 if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]
 then
 	countx=0
@@ -316,7 +318,7 @@ Active_scan(){
 }
 
 cors(){
-bod;read -r -p "Would you like to check CORS misconfiguration on all discovered subdomains? [y/N] " response
+bod;read -r -p "Do you want to check CORS misconfiguration? [y/N] " response
 if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]
 then
     echo -e "${GREEN}[+]${LIGHTGRAY}Checking CORS misconfiguration ${LGREEN}OK${RESTORE}\n"
@@ -331,7 +333,7 @@ ban_ln(){
 
 ztransfer(){
 bod
-read -r -p "Would you like to check the Zone Transfer for discovered NS? [y/N] " response
+read -r -p "Do you want to check the Zone Transfer for discovered NS? [y/N] " response
 if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]
 then
     echo -e "${GREEN}[+]${LIGHTGRAY}Checking Zone transfer ${LGREEN}OK${RESTORE}\n"
@@ -376,7 +378,7 @@ bl(){
 }
 discovery(){
 bod
-read -r -p "Would you like to run content discovery on all discovered subdomains? [y/N] " response
+read -r -p "Do you want to run content discovery on subdomains? [y/N] " response
 if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]
 then
 	echo -e "\n${GREEN}[+]${LIGHTGRAY}Running Content discovery ${LGREEN}OK${RESTORE}"
@@ -384,6 +386,18 @@ then
 	do
 		ban_ln; python3 ~/cansina/cansina.py -u $dom -p ~/cansina/wlist
 	done < $inp
+else
+	echo ''
+fi
+}
+
+subtakover(){
+bod
+read -r -p "Do you want to check subdomain takeover vulnerability? [y/N] " response
+if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]
+then
+	echo -e "\n${GREEN}[+]${LIGHTGRAY} Running Subdomain Takeover ${LGREEN}OK${RESTORE}\n"
+	python ~/subdomain-takeover/takeover.py -d $url -f ${inp} -t 30
 else
 	echo ''
 fi
@@ -413,7 +427,7 @@ allrecord=$(cat /tmp/samhax/arecord | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}"
 arc=$(wc -l /tmp/samhax/allrecord | awk '{print $1}')
 echo -e '\n'
 bl;echo -e "Extracted CNAME from ${YELLOW}${url}${RESTORE} subdomains";bl;cat /tmp/samhax/fn-py
-sleep 1;arecord;shodan_scanning;Active_scan;cors;ztransfer;discovery;cont > /dev/null 2>&1;bod; c=1;
+sleep 1;subtakover;arecord;shodan_scanning;Active_scan;cors;ztransfer;discovery;cont > /dev/null 2>&1;bod; c=1;
 }
 
 web_infoga(){
