@@ -13,7 +13,7 @@ SHODAN_API_KEY="P39ATgSrtgYAa3wdwIN42Nhxjy7nsYmG" # Shodan API Key Here
 ###									*** DISCLAIMER *** 											 ###
 ###																								 ###
 ###			This tool is written for educational purpose only.									 ###
-###			Usage of Recox for attacking targets without mutual consent is illegal.				 ###
+###			Usage of Recox for hitting targets without mutual assent is illegal.				 ###
 ###			It is the responsibility of end-user to obey local and federal laws.				 ###
 ###			The developer is not responsible for any misuse or damage caused by this program.	 ###
 ###																								 ###
@@ -92,15 +92,15 @@ ${LIGHTGRAY}██████${LGREEN}╔╝${LIGHTGRAY}█████${LGREEN
 ${LIGHTGRAY}██${LGREEN}╔══${LIGHTGRAY}██${LGREEN}╗${LIGHTGRAY}██${LGREEN}╔══╝${LIGHTGRAY}  ██${LGREEN}║${LIGHTGRAY}     ██${LGREEN}║${RED}//${LIGHTGRAY} ██${LGREEN}║${LRED} ██╔██╗ 
 ${LIGHTGRAY}██${LGREEN}║  ${LIGHTGRAY}██${LGREEN}║${LIGHTGRAY}███████${LGREEN}╗╚${LIGHTGRAY}██████${LGREEN}╗╚${LIGHTGRAY}██████${LGREEN}╔╝${LRED}██╔╝ ██╗${LIGHTGRAY}
 ${LGREEN}╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═════╝ ${LRED}╚═╝  ╚═╝                                         
-"
+";
 echo -e "\033[0;32mby @sulemanmalik_3\t\t\tV1.0\033[0m";ban_ln
 }
 disclaimer(){
-	echo -e "${LRED}Disclaimer${RESTORE}"
+	echo -e "${LRED}DISCLAIMER${RESTORE}"
 	echo -e "${LIGHTGRAY}This tool is written for educational purpose only.${RESTORE}" 
-	echo -e "${LIGHTGRAY}Usage of Recox for attacking targets without mutual consent is illegal.${RESTORE} "
+	echo -e "${LIGHTGRAY}Usage of Recox for hitting targets without mutual assent is illegal.${RESTORE} "
 	echo -e "${LIGHTGRAY}It is the responsibility of end-user to obey local and federal laws.${RESTORE} "
-	echo -e "${LIGHTGRAY}The developer is not responsible for any misuse or damage caused by this program.${RESTORE}"
+	echo -e "${LIGHTGRAY}The developer is not responsible for any misuse or damage caused by this program.${RESTORE}"; sleep 3
 }
 validate(){
 	regex='(https?|http)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]'
@@ -253,6 +253,8 @@ shodan_scanning(){
 read -r -p "Passive Scan the discovered IP's? [y/N] " response
 if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]
 then
+	date=$(date)
+	echo -e "\n${YELLOW}[+]${LIGHTGRAY} Scan Started (${YELLOW}${date}${LIGHTGRAY})\n"
 	countx=0
     while read ip_addr
     do
@@ -291,8 +293,11 @@ fi
 
 Active_scan(){
 	bod; read -r -p "Active Scan the discovered IP's? [y/N] " response
+	read -r -p "+-----------> Fingerprints Scan? [y/N] " response2
 	if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]
 	then
+		date=$(date)
+		echo -e "\n${YELLOW}[+]${LIGHTGRAY} Scan Started (${YELLOW}${date}${LIGHTGRAY})\n"
 	    while read ips
 		do
 		fingerprint='/tmp/samhax/fingerprint'; active_scan='/tmp/samhax/active_scan'
@@ -303,13 +308,16 @@ Active_scan(){
 		p80=$(echo "${port}" | grep -o "80/tcp" | head -n1); p8080=$(echo "${port}" | grep -o "8080/tcp" | head -n1); p443=$(echo "${port}" | grep -o "443/tcp" | head -n1)
 		echo -e "\n${RED}Port Scanning${RESTORE} | IP: ${GREEN}${hostIP}${RESTORE}\nDomain: ${YELLOW}$dom${RESTORE} | Original : ${YELLOW}${ips}${RESTORE}\n"
 		echo -e "${GREEN}${stat}${RESTORE}" ;echo -e "${GREEN}${port}${RESTORE}\n"
-		if [ "$p80" == "80/tcp" ] || [ "$p8080" == "8080/tcp" ] || [ "$p443" == "443/tcp" ]
+		if [[ "$response2" =~ ^([yY][eE][sS]|[yY])$ ]]
 		then
-			curl -A $agent -I $ips -L -s --max-time 5 > ${fingerprint}
-			echo -e "${RED}Scanning Fingerprints...${RESTORE}\n"
-			cat ${fingerprint}; bl
-		else
-			bl
+			if [ "$p80" == "80/tcp" ] || [ "$p8080" == "8080/tcp" ] || [ "$p443" == "443/tcp" ]
+			then
+				curl -A $agent -I $ips -L -s --max-time 5 > ${fingerprint}
+				echo -e "${RED}Scanning Fingerprints...${RESTORE}\n"
+				cat ${fingerprint}; bl
+			else
+				bl
+			fi
 		fi
 		done < /tmp/samhax/allrecord
 	else
@@ -397,7 +405,7 @@ read -r -p "Do you want to check subdomain takeover vulnerability? [y/N] " respo
 if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]
 then
 	echo -e "\n${GREEN}[+]${LIGHTGRAY} Running Subdomain Takeover ${LGREEN}OK${RESTORE}\n"
-	python ~/subdomain-takeover/takeover.py -d $url -f ${inp} -t 30
+	python ~/subdomain-takeover/takeover.py -d ${url} -f ${inp} -t 30
 else
 	echo ''
 fi
@@ -470,7 +478,7 @@ main(){
 	while true
 	do
 		if [ $c -ne 0 ];then ban; fi
-		echo -e "\n[1] Deep-dom Scanner";echo -e "[2] Deep-Js";echo -e "[3] Web-Info";echo -e "[0] Exit\n"
+		echo -e "\n[1] Deep-Dom Scanner";echo -e "[2] Deep-JS";echo -e "[3] Web-Info";echo -e "[0] Exit\n"
 		if [ -z ${vtotal_api} ] || [ -z ${shodan_api} ] || [ "$shodan_verify" == "bad password" ] || [ -z "${vtotal_validate}" ];then echo -e "${RED}[!] API Keys are Missing. Exiting Program\n${RESTORE}";ban_ln;exit 1;fi
 		read -r -p "=§> " choice
 		choice=$(echo $choice | grep -x -E '[[:digit:]]+')
@@ -495,4 +503,4 @@ main(){
 		fi
 	done
 }
-c_code;clear;ban;disclaimer;sleep 3;main
+c_code;clear;ban;disclaimer;main
