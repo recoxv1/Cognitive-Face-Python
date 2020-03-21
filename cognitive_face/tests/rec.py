@@ -23,6 +23,7 @@ SHODAN_API_KEY="P39ATgSrtgYAa3wdwIN42Nhxjy7nsYmG" # Shodan API Key Here
 
 cont(){
 rm -rf /tmp/samhax > /dev/null 2>&1
+rm /tmp/.cache > /dev/null 2>&1
 }
 checkOS(){
 	oscheck="$(uname -s)"
@@ -503,4 +504,4 @@ main(){
 		fi
 	done
 }
-c_code;clear;ban;disclaimer;main
+c_code;clear;cont;ban;disclaimer;main
